@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.18.1",
     "browserslist": "^4.28.6",
     "caniuse-lite": "^1.0.30001805",
     "lucide-react": "^0.542.0",

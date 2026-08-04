@@ -1,117 +1,267 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/login";
+
 import Dashboard from "./pages/dashboard";
 import CreateComplaint from "./pages/createcomplaint";
 import MyComplaints from "./pages/mycomplaints";
 import Profile from "./pages/profile";
 import Leave from "./pages/leave";
 import NoticeBoard from "./pages/noticeboard";
+
 import ProtectedRoute from "./components/ProtectedRoute";
+
 import AdminLogin from "./pages/adminlogin";
 import AdminDashboard from "./pages/admindashboard";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
+
 import ManageComplaints from "./pages/managecomplaints";
 import ManageLeave from "./pages/manageleave";
 import ManageNotices from "./pages/managenotices";
+
+import ManageStudents from "./pages/managestudents";
+
 function App() {
+
   return (
+
     <BrowserRouter>
-  <Routes>
 
-    <Route path="/" element={<Login />} />
+      <Routes>
 
-    <Route
-      path="/dashboard"
-      element={
-        <ProtectedRoute>
-          <Dashboard />
-        </ProtectedRoute>
-      }
-    />
 
-    <Route
-      path="/create-complaint"
-      element={
-        <ProtectedRoute>
-          <CreateComplaint />
-        </ProtectedRoute>
-      }
-    />
+        {/* Student Login */}
 
-    <Route
-      path="/my-complaints"
-      element={
-        <ProtectedRoute>
-          <MyComplaints />
-        </ProtectedRoute>
-      }
-    />
+        <Route
+          path="/"
+          element={
+            localStorage.getItem("token")
+              ? <Navigate to="/dashboard" />
+              : <Login />
+          }
+        />
 
-    <Route
-      path="/profile"
-      element={
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
-      }
-    />
 
-    <Route
-      path="/leave"
-      element={
-        <ProtectedRoute>
-          <Leave />
-        </ProtectedRoute>
-      }
-    />
 
-    <Route
-      path="/noticeboard"
-      element={
-        <ProtectedRoute>
-          <NoticeBoard />
-        </ProtectedRoute>
-      }
-    />
-    <Route path="/admin" element={<AdminLogin />} />
+        {/* Student Routes */}
 
-<Route
-  path="/admin-dashboard"
-  element={
-    <AdminProtectedRoute>
-      <AdminDashboard />
-    </AdminProtectedRoute>
-  }
-/>
-<Route
-  path="/manage-complaints"
-  element={
-    <AdminProtectedRoute>
-      <ManageComplaints />
-    </AdminProtectedRoute>
-  }
-/>
-<Route
-  path="/manage-leave"
+
+        <Route
+
+          path="/dashboard"
+
+          element={
+
+            <ProtectedRoute>
+
+              <Dashboard />
+
+            </ProtectedRoute>
+
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/create-complaint"
+
+          element={
+
+            <ProtectedRoute>
+
+              <CreateComplaint />
+
+            </ProtectedRoute>
+
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/my-complaints"
+
+          element={
+
+            <ProtectedRoute>
+
+              <MyComplaints />
+
+            </ProtectedRoute>
+
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/profile"
+
+          element={
+
+            <ProtectedRoute>
+
+              <Profile />
+
+            </ProtectedRoute>
+
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/leave"
+
+          element={
+
+            <ProtectedRoute>
+
+              <Leave />
+
+            </ProtectedRoute>
+
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/noticeboard"
+
+          element={
+
+            <ProtectedRoute>
+
+              <NoticeBoard />
+
+            </ProtectedRoute>
+
+          }
+
+        />
+
+
+
+
+
+        {/* Admin Routes */}
+
+
+
+        <Route
+
+          path="/admin"
+
+          element={<AdminLogin />}
+
+        />
+
+
+
+
+        <Route
+
+          path="/admin-dashboard"
+
+          element={
+
+            <AdminProtectedRoute>
+
+              <AdminDashboard />
+
+            </AdminProtectedRoute>
+
+          }
+
+        />
+
+
+
+        <Route
+
+          path="/manage-complaints"
+
+          element={
+
+            <AdminProtectedRoute>
+
+              <ManageComplaints />
+
+            </AdminProtectedRoute>
+
+          }
+
+        />
+
+
+
+        <Route
+  path="/admin/leaves"
   element={
     <AdminProtectedRoute>
       <ManageLeave />
     </AdminProtectedRoute>
   }
 />
+
+
+
+        
 <Route
-  path="/manage-notices"
+  path="/admin/notices"
   element={
     <AdminProtectedRoute>
       <ManageNotices />
     </AdminProtectedRoute>
   }
 />
+<Route
 
-  </Routes>
-</BrowserRouter>
+  path="/admin/students"
+
+  element={
+
+    <AdminProtectedRoute>
+
+      <ManageStudents />
+
+    </AdminProtectedRoute>
+
+  }
+
+/>
+
+        {/* Unknown URL */}
+
+        <Route
+
+          path="*"
+
+          element={<Navigate to="/" />}
+
+        />
+
+
+      </Routes>
+
+
+    </BrowserRouter>
+
   );
+
 }
+
 
 export default App;

@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Lock, ShieldCheck } from "lucide-react";
+import { ShieldCheck, Mail, Lock } from "lucide-react";
+import axios from "axios";
 
 function AdminLogin() {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
 
-  const handleLogin = () => {
-    if (username.trim() === "" || password.trim() === "") {
-      setMessage("Please enter username and password.");
+  const handleLogin = async () => {
+    if (email.trim() === "" || password.trim() === "") {
+      setMessage("Please enter email and password.");
       setMessageType("error");
 
       setTimeout(() => {
@@ -23,8 +24,38 @@ function AdminLogin() {
       return;
     }
 
-    if (username === "admin" && password === "admin123") {
-      localStorage.setItem("isAdminLoggedIn", "true");
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      // Check admin role
+      if (response.data.user.role !== "admin") {
+        setMessage("Access denied. Admin account required.");
+        setMessageType("error");
+
+        setTimeout(() => {
+          setMessage("");
+        }, 3000);
+
+        return;
+      }
+
+      // Save admin token
+      localStorage.setItem(
+        "adminToken",
+        response.data.token
+      );
+
+      // Save admin details
+      localStorage.setItem(
+        "admin",
+        JSON.stringify(response.data.user)
+      );
 
       setMessage("Login Successful!");
       setMessageType("success");
@@ -32,8 +63,14 @@ function AdminLogin() {
       setTimeout(() => {
         navigate("/admin-dashboard");
       }, 800);
-    } else {
-      setMessage("Invalid username or password.");
+
+    } catch (error) {
+      console.log(error.response?.data);
+
+      setMessage(
+        error.response?.data?.message || "Login failed"
+      );
+
       setMessageType("error");
 
       setTimeout(() => {
@@ -49,17 +86,23 @@ function AdminLogin() {
 
         <div className="flex justify-center mb-5">
           <div className="bg-purple-100 p-5 rounded-full">
-            <ShieldCheck size={55} className="text-purple-700" />
+            <ShieldCheck
+              size={55}
+              className="text-purple-700"
+            />
           </div>
         </div>
+
 
         <h1 className="text-4xl font-bold text-center text-purple-700">
           Admin Login
         </h1>
 
+
         <p className="text-center text-gray-500 mt-2 mb-8">
           HostelSphere Administration
         </p>
+
 
         {message && (
           <div
@@ -73,41 +116,55 @@ function AdminLogin() {
           </div>
         )}
 
+
         <label className="font-medium">
-          Username
+          Admin Email
         </label>
 
         <div className="flex items-center border rounded-xl mt-2 mb-5 px-4">
 
-          <User className="text-gray-500" size={20} />
+          <Mail
+            className="text-gray-500"
+            size={20}
+          />
 
           <input
-            type="text"
-            placeholder="Enter Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Enter Admin Email"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
             className="w-full p-4 outline-none"
           />
 
         </div>
+
 
         <label className="font-medium">
           Password
         </label>
 
+
         <div className="flex items-center border rounded-xl mt-2 mb-8 px-4">
 
-          <Lock className="text-gray-500" size={20} />
+          <Lock
+            className="text-gray-500"
+            size={20}
+          />
 
           <input
             type="password"
             placeholder="Enter Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
             className="w-full p-4 outline-none"
           />
 
         </div>
+
 
         <button
           onClick={handleLogin}
@@ -115,6 +172,7 @@ function AdminLogin() {
         >
           Login
         </button>
+
 
       </div>
 

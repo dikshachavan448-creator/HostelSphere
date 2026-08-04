@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import AdminNavbar from "../components/adminnavbar";
 import {
   Search,
@@ -14,27 +15,51 @@ function ManageComplaints() {
   const [statusFilter, setStatusFilter] = useState("All");
 
   useEffect(() => {
-    loadComplaints();
+    fetchComplaints();
   }, []);
 
-  const loadComplaints = () => {
-    const stored =
-      JSON.parse(localStorage.getItem("complaints")) || [];
-    setComplaints(stored);
-  };
+  const fetchComplaints = async () => {
+  try {
+    const token = localStorage.getItem("adminToken");
 
-  const updateStatus = (id, newStatus) => {
-    const updated = complaints.map((item) =>
-      item.id === id
-        ? { ...item, status: newStatus }
-        : item
+    const res = await axios.get(
+      "http://localhost:5000/api/complaints/all",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
     );
 
-    setComplaints(updated);
-    localStorage.setItem(
-      "complaints",
-      JSON.stringify(updated)
-    );
+    console.log("API Response:", res.data);
+
+    setComplaints(res.data.complaints);
+  } catch (error) {
+    console.log(error.response);
+    console.log(error.response?.data);
+    alert("Failed to load complaints");
+  }
+};
+
+  const updateStatus = async (id, status) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      await axios.put(
+        `http://localhost:5000/api/complaints/${id}/status`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchComplaints();
+    } catch (error) {
+      console.error(error);
+      alert("Failed to update complaint");
+    }
   };
 
   const filteredComplaints = complaints.filter((complaint) => {
@@ -45,7 +70,7 @@ function ManageComplaints() {
       complaint.category
         ?.toLowerCase()
         .includes(search.toLowerCase()) ||
-      complaint.rollNumber
+      complaint.student?.rollNumber
         ?.toLowerCase()
         .includes(search.toLowerCase());
 
@@ -82,7 +107,7 @@ function ManageComplaints() {
           Manage Complaints
         </h1>
 
-        {/* Search */}
+        {/* Search & Filter */}
 
         <div className="bg-white rounded-2xl shadow-lg p-5 mb-8 flex flex-col md:flex-row gap-4">
 
@@ -92,11 +117,9 @@ function ManageComplaints() {
 
             <input
               type="text"
-              placeholder="Search by title, category or roll number..."
+              placeholder="Search..."
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full p-3 outline-none"
             />
 
@@ -108,9 +131,7 @@ function ManageComplaints() {
 
             <select
               value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(e.target.value)
-              }
+              onChange={(e) => setStatusFilter(e.target.value)}
               className="outline-none p-3"
             >
               <option>All</option>
@@ -127,7 +148,7 @@ function ManageComplaints() {
 
           <div className="bg-white rounded-2xl shadow-lg p-10 text-center">
 
-            <h2 className="text-2xl font-bold text-gray-700">
+            <h2 className="text-2xl font-bold">
               No Complaints Found
             </h2>
 
@@ -140,7 +161,7 @@ function ManageComplaints() {
             {filteredComplaints.map((complaint) => (
 
               <div
-                key={complaint.id}
+                key={complaint._id}
                 className="bg-white rounded-2xl shadow-lg p-6"
               >
 
@@ -152,14 +173,19 @@ function ManageComplaints() {
                       {complaint.title}
                     </h2>
 
-                    <p className="mt-2">
-                      <strong>Category:</strong>{" "}
-                      {complaint.category}
+                    <p>
+                      <strong>Student:</strong>{" "}
+                      {complaint.student?.name}
                     </p>
 
                     <p>
                       <strong>Roll Number:</strong>{" "}
-                      {complaint.rollNumber}
+                      {complaint.student?.rollNumber}
+                    </p>
+
+                    <p>
+                      <strong>Category:</strong>{" "}
+                      {complaint.category}
                     </p>
 
                     <p>
@@ -172,13 +198,21 @@ function ManageComplaints() {
                       {complaint.description}
                     </p>
 
-                    <p className="text-gray-500 mt-2">
-                      Submitted: {complaint.date}
-                    </p>
+                   <p className="text-gray-500 mt-2">
+                      Submitted:
+                     {" "}
+                     {new Date(complaint.createdAt).toLocaleString("en-IN", {
+                      day: "numeric",
+                     month: "short",
+                      year: "numeric",
+                     hour: "2-digit",
+                     minute: "2-digit",
+                     })}
+                   </p>
 
                   </div>
 
-                  <div className="flex flex-col gap-3 items-end">
+                  <div className="flex flex-col gap-4">
 
                     <span
                       className={`px-4 py-2 rounded-full font-medium ${getStatusColor(
@@ -188,49 +222,44 @@ function ManageComplaints() {
                       {complaint.status}
                     </span>
 
-                    {/* PASTE PART 2 BELOW THIS LINE */}
-                                        <div className="flex gap-2 flex-wrap">
+                    <button
+                      onClick={() =>
+                        updateStatus(
+                          complaint._id,
+                          "Pending"
+                        )
+                      }
+                      className="bg-yellow-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                    >
+                      <Clock3 size={16} />
+                      Pending
+                    </button>
 
-                      <button
-                        onClick={() =>
-                          updateStatus(
-                            complaint.id,
-                            "Pending"
-                          )
-                        }
-                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded-lg flex items-center gap-2"
-                      >
-                        <Clock3 size={16} />
-                        Pending
-                      </button>
+                    <button
+                      onClick={() =>
+                        updateStatus(
+                          complaint._id,
+                          "In Progress"
+                        )
+                      }
+                      className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                    >
+                      <Wrench size={16} />
+                      In Progress
+                    </button>
 
-                      <button
-                        onClick={() =>
-                          updateStatus(
-                            complaint.id,
-                            "In Progress"
-                          )
-                        }
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg flex items-center gap-2"
-                      >
-                        <Wrench size={16} />
-                        In Progress
-                      </button>
-
-                      <button
-                        onClick={() =>
-                          updateStatus(
-                            complaint.id,
-                            "Resolved"
-                          )
-                        }
-                        className="bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-lg flex items-center gap-2"
-                      >
-                        <CheckCircle size={16} />
-                        Resolved
-                      </button>
-
-                    </div>
+                    <button
+                      onClick={() =>
+                        updateStatus(
+                          complaint._id,
+                          "Resolved"
+                        )
+                      }
+                      className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+                    >
+                      <CheckCircle size={16} />
+                      Resolved
+                    </button>
 
                   </div>
 
