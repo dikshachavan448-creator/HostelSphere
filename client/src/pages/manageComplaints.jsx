@@ -467,4 +467,4 @@ function ManageComplaints() {
 }
 
 
-export default ManageComplaints;s
+export default ManageComplaints;
