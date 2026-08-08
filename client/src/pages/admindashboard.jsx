@@ -59,25 +59,25 @@ function AdminDashboard() {
 
 
         axios.get(
-          "http://localhost:5000/api/complaints/all",
+          "${import.meta.env.VITE_API_URL}/complaints/all",
           config
         ),
 
 
         axios.get(
-          "http://localhost:5000/api/leaves/all",
+          "${import.meta.env.VITE_API_URL}/leaves/all",
           config
         ),
 
 
         axios.get(
-          "http://localhost:5000/api/users/students",
+          "${import.meta.env.VITE_API_URL}/users/students",
           config
         ),
 
 
         axios.get(
-          "http://localhost:5000/api/notices",
+          "${import.meta.env.VITE_API_URL}/notices",
           config
         )
 

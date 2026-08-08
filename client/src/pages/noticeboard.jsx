@@ -18,7 +18,7 @@ function NoticeBoard() {
 
 
         const response = await axios.get(
-          "http://localhost:5000/api/notices",
+          "${import.meta.env.VITE_API_URL}/notices",
           {
             headers: {
               Authorization: `Bearer ${token}`,

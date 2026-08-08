@@ -31,7 +31,7 @@ function ManageComplaints() {
       const token = localStorage.getItem("adminToken");
 
       const res = await axios.get(
-        "http://localhost:5000/api/complaints/all",
+        "${import.meta.env.VITE_API_URL}/complaints/all",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -65,7 +65,7 @@ function ManageComplaints() {
       const token = localStorage.getItem("adminToken");
 
       await axios.put(
-        `http://localhost:5000/api/complaints/${id}/status`,
+        `${import.meta.env.VITE_API_URL}/complaints/${id}/status`,
         { status },
         {
           headers: {

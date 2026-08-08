@@ -36,7 +36,7 @@ function CreateComplaint() {
       }
 
       await axios.post(
-        "http://localhost:5000/api/complaints",
+        "${import.meta.env.VITE_API_URL}/complaints",
         {
           title,
           category,

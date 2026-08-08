@@ -50,7 +50,7 @@ function ManageNotices() {
 
       const response = await axios.get(
 
-        "http://localhost:5000/api/notices",
+        "${import.meta.env.VITE_API_URL}/notices",
 
         {
           headers: {
@@ -154,7 +154,7 @@ function ManageNotices() {
 
         await axios.post(
 
-          "http://localhost:5000/api/notices",
+          "${import.meta.env.VITE_API_URL}/notices",
 
           {
             title,
@@ -259,7 +259,7 @@ function ManageNotices() {
 
       await axios.delete(
 
-        `http://localhost:5000/api/notices/${id}`,
+        `${import.meta.env.VITE_API_URL}/notices/${id}`,
 
         {
           headers: {

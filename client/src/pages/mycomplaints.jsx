@@ -33,7 +33,7 @@ function MyComplaints() {
 
 
       const response = await axios.get(
-        "http://localhost:5000/api/complaints",
+        "${import.meta.env.VITE_API_URL}/complaints",
         {
           headers: {
             Authorization: `Bearer ${token}`,

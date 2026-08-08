@@ -46,7 +46,7 @@ function Leave() {
 
 
       const response = await axios.get(
-        "http://localhost:5000/api/leaves/my",
+        "${import.meta.env.VITE_API_URL}/leaves/my",
         {
           headers:{
             Authorization:`Bearer ${token}`,
@@ -155,7 +155,7 @@ function Leave() {
 
       await axios.post(
 
-        "http://localhost:5000/api/leaves",
+        "${import.meta.env.VITE_API_URL}/leaves",
 
         {
           destination,

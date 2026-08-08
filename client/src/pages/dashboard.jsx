@@ -49,7 +49,7 @@ function Dashboard() {
       const [complaintsRes, leavesRes, noticesRes] =
         await Promise.all([
           axios.get(
-            "http://localhost:5000/api/complaints",
+            "${import.meta.env.VITE_API_URL}/complaints",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ function Dashboard() {
           ),
 
           axios.get(
-            "http://localhost:5000/api/leaves/my",
+            "${import.meta.env.VITE_API_URL}/leaves/my",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ function Dashboard() {
           ),
 
           axios.get(
-            "http://localhost:5000/api/notices",
+            "${import.meta.env.VITE_API_URL}/notices",
             {
               headers: {
                 Authorization: `Bearer ${token}`,

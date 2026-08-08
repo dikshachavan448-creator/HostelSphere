@@ -37,7 +37,7 @@ function ManageLeave() {
 
 
       const response = await axios.get(
-        "http://localhost:5000/api/leaves/all",
+        "${import.meta.env.VITE_API_URL}/leaves/all",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,7 +97,7 @@ function ManageLeave() {
 
       await axios.put(
 
-        `http://localhost:5000/api/leaves/${id}`,
+        `${import.meta.env.VITE_API_URL}/leaves/${id}`,
 
         {
           status,
