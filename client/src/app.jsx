@@ -7,7 +7,7 @@ import Profile from "./pages/profile";
 import Leave from "./pages/leave";
 import NoticeBoard from "./pages/noticeboard";
 
-import ProtectedRoute from "./components/protectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import AdminLogin from "./pages/adminLogin";
 import AdminDashboard from "./pages/adminDashboard";
