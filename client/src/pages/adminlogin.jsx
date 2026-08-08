@@ -1,30 +1,30 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck, Mail, Lock } from "lucide-react";
+import {
+  ShieldCheck,
+  Mail,
+  Lock,
+  LoaderCircle,
+} from "lucide-react";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 function AdminLogin() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (email.trim() === "" || password.trim() === "") {
-      setMessage("Please enter email and password.");
-      setMessageType("error");
-
-      setTimeout(() => {
-        setMessage("");
-      }, 3000);
-
+      toast.error("Please enter email and password.");
       return;
     }
 
     try {
+      setLoading(true);
+
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
         {
@@ -35,13 +35,8 @@ function AdminLogin() {
 
       // Check admin role
       if (response.data.user.role !== "admin") {
-        setMessage("Access denied. Admin account required.");
-        setMessageType("error");
-
-        setTimeout(() => {
-          setMessage("");
-        }, 3000);
-
+        toast.error("Access denied. Admin account required.");
+        setLoading(false);
         return;
       }
 
@@ -57,25 +52,19 @@ function AdminLogin() {
         JSON.stringify(response.data.user)
       );
 
-      setMessage("Login Successful!");
-      setMessageType("success");
+      toast.success("Admin Login Successful!");
 
       setTimeout(() => {
         navigate("/admin-dashboard");
-      }, 800);
+      }, 1000);
 
     } catch (error) {
-      console.log(error.response?.data);
-
-      setMessage(
-        error.response?.data?.message || "Login failed"
+      toast.error(
+        error.response?.data?.message ||
+        "Login failed"
       );
-
-      setMessageType("error");
-
-      setTimeout(() => {
-        setMessage("");
-      }, 3000);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,29 +82,15 @@ function AdminLogin() {
           </div>
         </div>
 
-
         <h1 className="text-4xl font-bold text-center text-purple-700">
           Admin Login
         </h1>
-
 
         <p className="text-center text-gray-500 mt-2 mb-8">
           HostelSphere Administration
         </p>
 
-
-        {message && (
-          <div
-            className={`mb-6 p-3 rounded-xl text-center font-medium ${
-              messageType === "success"
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            }`}
-          >
-            {message}
-          </div>
-        )}
-
+        {/* Email */}
 
         <label className="font-medium">
           Admin Email
@@ -140,11 +115,11 @@ function AdminLogin() {
 
         </div>
 
+        {/* Password */}
 
         <label className="font-medium">
           Password
         </label>
-
 
         <div className="flex items-center border rounded-xl mt-2 mb-8 px-4">
 
@@ -165,14 +140,32 @@ function AdminLogin() {
 
         </div>
 
+        {/* Login Button */}
 
         <button
           onClick={handleLogin}
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white py-4 rounded-xl font-semibold transition"
+          disabled={loading}
+          className={`w-full py-4 rounded-xl flex items-center justify-center gap-3 text-lg font-semibold transition ${
+            loading
+              ? "bg-purple-400 cursor-not-allowed"
+              : "bg-purple-600 hover:bg-purple-700"
+          } text-white`}
         >
-          Login
+          {loading ? (
+            <>
+              <LoaderCircle
+                size={22}
+                className="animate-spin"
+              />
+              Logging In...
+            </>
+          ) : (
+            <>
+              <ShieldCheck size={22} />
+              Login
+            </>
+          )}
         </button>
-
 
       </div>
 

@@ -1,92 +1,98 @@
 import { useEffect, useState } from "react";
 import AdminNavbar from "../components/adminnavbar";
+import axios from "axios";
+import toast from "react-hot-toast";
+
 import {
   Search,
   CalendarDays,
   CheckCircle,
   XCircle,
   Clock3,
+  LoaderCircle,
 } from "lucide-react";
-import axios from "axios";
 
 
 function ManageLeave() {
 
-
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [search, setSearch] = useState("");
-
-
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState("");
 
   const token = localStorage.getItem("adminToken");
 
 
-
-
   useEffect(() => {
-
     loadLeaves();
-
   }, []);
 
 
 
+  const loadLeaves = async () => {
 
+    try {
 
-  const loadLeaves = async()=>{
-
-
-    try{
+      setLoading(true);
 
 
       const response = await axios.get(
-
         "http://localhost:5000/api/leaves/all",
-
         {
-
-          headers:{
-
-            Authorization:`Bearer ${token}`
-
-          }
-
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-
       );
 
 
-
-      setLeaveRequests(
-        response.data.leaves || []
-      );
+      setLeaveRequests(response.data.leaves || []);
 
 
-
-    }catch(error){
-
+    } catch (error) {
 
       console.log(
-        "Error fetching leaves:",
+        "Load Leave Error:",
         error.response?.data || error.message
       );
 
 
-    }
+      if (error.response?.status === 401) {
 
+        toast.error(
+          "Session expired. Please login again."
+        );
+
+      } else if (error.message === "Network Error") {
+
+        toast.error(
+          "Unable to connect to server."
+        );
+
+      } else {
+
+        toast.error(
+          "Failed to load leave requests."
+        );
+
+      }
+
+
+    } finally {
+
+      setLoading(false);
+
+    }
 
   };
 
 
 
+  const updateStatus = async (id, status) => {
 
+    try {
 
-
-
-  const updateStatus = async(id,status)=>{
-
-
-    try{
+      setUpdatingId(id);
 
 
       await axios.put(
@@ -94,452 +100,422 @@ function ManageLeave() {
         `http://localhost:5000/api/leaves/${id}`,
 
         {
-          status
+          status,
         },
 
         {
-
-          headers:{
-
-            Authorization:`Bearer ${token}`
-
-          }
-
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
 
       );
 
 
+      toast.success(
+        `Leave marked as ${status}`
+      );
+
 
       loadLeaves();
 
 
-
-    }catch(error){
-
+    } catch (error) {
 
       console.log(
-        "Error updating status:",
+        "Update Leave Error:",
         error.response?.data || error.message
       );
 
 
-    }
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to update status."
+      );
 
+
+    } finally {
+
+      setUpdatingId("");
+
+    }
 
   };
 
 
 
+  const filteredLeaves = leaveRequests.filter((leave) => {
+
+    const text = search.toLowerCase();
 
 
-
-
-
-  const filteredLeaves = leaveRequests.filter(
-    (leave)=>
+    return (
 
       leave.student?.rollNumber
-      ?.toLowerCase()
-      .includes(search.toLowerCase())
-
-      ||
+        ?.toLowerCase()
+        .includes(text) ||
 
       leave.student?.name
-      ?.toLowerCase()
-      .includes(search.toLowerCase())
-
-      ||
+        ?.toLowerCase()
+        .includes(text) ||
 
       leave.destination
-      ?.toLowerCase()
-      .includes(search.toLowerCase())
+        ?.toLowerCase()
+        .includes(text)
 
-  );
+    );
 
-
-
-
+  });
 
 
 
-  const badgeColor=(status)=>{
+  const badgeColor = (status) => {
 
-
-    switch(status){
-
+    switch(status) {
 
       case "Approved":
-
         return "bg-green-100 text-green-700";
 
 
       case "Rejected":
-
         return "bg-red-100 text-red-700";
 
 
       default:
-
         return "bg-yellow-100 text-yellow-700";
-
 
     }
 
-
   };
-
-
-
-
 
 
 
   return (
 
-<>
+    <>
 
-<AdminNavbar />
+      {/* FIXED SIDEBAR */}
+      <AdminNavbar />
 
 
+      {/* PAGE CONTENT */}
+      <div className="ml-64 min-h-screen bg-gray-100 p-10">
 
-<div className="ml-64 min-h-screen bg-gray-100 p-10">
 
+        <h1 className="text-4xl font-bold text-purple-700 mb-8">
+          Manage Leave Requests
+        </h1>
 
 
-<h1 className="text-4xl font-bold text-purple-700 mb-8">
+        <div className="bg-white rounded-2xl shadow-lg p-5 mb-8">
 
-Manage Leave Requests
+          <div className="flex items-center border rounded-xl px-4">
 
-</h1>
+            <Search className="text-gray-500 mr-2" />
 
 
+            <input
 
+              type="text"
 
+              placeholder="Search by Roll Number, Name or Destination..."
 
-<div className="bg-white p-5 rounded-2xl shadow-lg mb-8">
+              value={search}
 
+              onChange={(e)=>setSearch(e.target.value)}
 
-<div className="flex items-center border rounded-xl px-4">
+              className="w-full p-3 outline-none"
 
+            />
 
-<Search className="text-gray-500"/>
 
+          </div>
 
 
-<input
+        </div>
 
-type="text"
 
-placeholder="Search by Roll Number, Name or Destination..."
 
-value={search}
+        {loading ? (
 
-onChange={(e)=>setSearch(e.target.value)}
+          <div className="bg-white rounded-2xl shadow-lg p-10 text-center flex flex-col items-center">
 
-className="w-full p-3 outline-none"
+            <LoaderCircle
+              size={40}
+              className="animate-spin text-purple-600 mb-3"
+            />
 
-/>
 
+            <h2 className="text-xl font-semibold text-gray-600">
+              Loading leave requests...
+            </h2>
 
-</div>
 
+          </div>
 
-</div>
 
+        ) : filteredLeaves.length === 0 ? (
 
 
+          <div className="bg-white rounded-2xl shadow-lg p-10 text-center">
 
 
+            <CalendarDays
+              size={60}
+              className="mx-auto text-purple-600 mb-4"
+            />
 
 
-{filteredLeaves.length===0 ? (
+            <h2 className="text-2xl font-bold">
+              No Leave Requests Found
+            </h2>
 
 
-<div className="bg-white rounded-2xl shadow-lg p-10 text-center">
+          </div>
 
 
-<CalendarDays
+        ) : (
 
-size={60}
+          <div className="space-y-6">
+          {filteredLeaves.map((leave) => (
 
-className="mx-auto text-purple-600 mb-4"
+            <div
+              key={leave._id}
+              className="bg-white rounded-2xl shadow-lg p-6"
+            >
 
-/>
 
+              <div className="flex justify-between items-start">
 
-<h2 className="text-2xl font-bold">
 
-No Leave Requests Found
+                <div>
 
-</h2>
 
+                  <h2 className="text-2xl font-semibold">
+                    {leave.destination}
+                  </h2>
 
-</div>
 
 
+                  <p>
+                    <strong>Name:</strong>{" "}
+                    {leave.student?.name || "N/A"}
+                  </p>
 
-):(
 
 
+                  <p>
+                    <strong>Roll Number:</strong>{" "}
+                    {leave.student?.rollNumber || "N/A"}
+                  </p>
 
 
-<div className="space-y-6">
 
+                  <p>
+                    <strong>Reason:</strong>{" "}
+                    {leave.reason}
+                  </p>
 
-{filteredLeaves.map((leave)=>(
 
 
+                  <p>
+                    <strong>Departure:</strong>{" "}
+                    {new Date(
+                      leave.departureDate
+                    ).toLocaleDateString("en-IN")}
+                  </p>
 
-<div
 
-key={leave._id}
 
-className="bg-white rounded-2xl shadow-lg p-6"
+                  <p>
+                    <strong>Return:</strong>{" "}
+                    {new Date(
+                      leave.returnDate
+                    ).toLocaleDateString("en-IN")}
+                  </p>
 
->
 
 
+                  <p>
+                    <strong>Parent Contact:</strong>{" "}
+                    {leave.parentContact}
+                  </p>
 
-<div className="flex justify-between">
 
 
+                  <p>
+                    <strong>Emergency Contact:</strong>{" "}
+                    {leave.emergencyContact}
+                  </p>
 
 
 
-<div>
+                  <p className="text-gray-500 mt-3">
 
+                    Submitted:{" "}
 
+                    {new Date(
+                      leave.createdAt
+                    ).toLocaleString("en-IN", {
 
-<h2 className="text-2xl font-semibold">
+                      day: "numeric",
 
-{leave.destination}
+                      month: "short",
 
-</h2>
+                      year: "numeric",
 
+                      hour: "2-digit",
 
+                      minute: "2-digit",
 
+                    })}
 
+                  </p>
 
-<p>
 
-<strong>Name:</strong>{" "}
+                </div>
 
-{leave.student?.name || "N/A"}
 
-</p>
 
 
 
+                <div className="flex flex-col gap-4">
 
 
-<p>
+                  <span
+                    className={`px-4 py-2 rounded-full text-center font-medium ${badgeColor(
+                      leave.status
+                    )}`}
+                  >
+                    {leave.status}
+                  </span>
 
-<strong>Roll Number:</strong>{" "}
 
-{leave.student?.rollNumber || "N/A"}
 
-</p>
 
 
+                  <button
 
+                    disabled={
+                      updatingId === leave._id
+                    }
 
+                    onClick={() =>
+                      updateStatus(
+                        leave._id,
+                        "Pending"
+                      )
+                    }
 
-<p>
+                    className="bg-yellow-500 hover:bg-yellow-600 disabled:bg-yellow-300 text-white px-4 py-2 rounded-lg flex items-center gap-2"
 
-<strong>Reason:</strong>{" "}
+                  >
 
-{leave.reason}
+                    <Clock3 size={16} />
 
-</p>
+                    Pending
 
+                  </button>
 
 
 
 
-<p>
 
-<strong>Departure:</strong>{" "}
 
-{leave.departureDate}
 
-</p>
+                  <button
 
+                    disabled={
+                      updatingId === leave._id
+                    }
 
+                    onClick={() =>
+                      updateStatus(
+                        leave._id,
+                        "Approved"
+                      )
+                    }
 
+                    className="bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white px-4 py-2 rounded-lg flex items-center gap-2"
 
+                  >
 
-<p>
 
-<strong>Return:</strong>{" "}
+                    {updatingId === leave._id ? (
 
-{leave.returnDate}
+                      <LoaderCircle
+                        size={16}
+                        className="animate-spin"
+                      />
 
-</p>
+                    ) : (
 
+                      <CheckCircle size={16} />
 
+                    )}
 
 
 
-<p>
+                    Approve
 
-<strong>Parent Contact:</strong>{" "}
 
-{leave.parentContact}
+                  </button>
 
-</p>
 
 
 
 
-</div>
 
 
+                  <button
 
+                    disabled={
+                      updatingId === leave._id
+                    }
 
+                    onClick={() =>
+                      updateStatus(
+                        leave._id,
+                        "Rejected"
+                      )
+                    }
 
+                    className="bg-red-600 hover:bg-red-700 disabled:bg-red-300 text-white px-4 py-2 rounded-lg flex items-center gap-2"
 
+                  >
 
+                    <XCircle size={16} />
 
-<div className="flex flex-col items-end gap-3">
+                    Reject
 
 
+                  </button>
 
 
 
-<span
+                </div>
 
-className={`px-4 py-2 rounded-full ${badgeColor(
-leave.status
-)}`}
 
->
 
-{leave.status}
+              </div>
 
-</span>
 
+            </div>
 
 
+          ))}
 
 
+        </div>
 
 
-<div className="flex flex-wrap gap-2">
+      )}
 
 
+    </div>
 
 
-
-<button
-
-onClick={()=>updateStatus(
-leave._id,
-"Pending"
-)}
-
-className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-
->
-
-<Clock3 size={18}/>
-
-Pending
-
-</button>
-
-
-
-
-
-
-
-<button
-
-onClick={()=>updateStatus(
-leave._id,
-"Approved"
-)}
-
-className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-
->
-
-<CheckCircle size={18}/>
-
-Approve
-
-</button>
-
-
-
-
-
-
-
-
-<button
-
-onClick={()=>updateStatus(
-leave._id,
-"Rejected"
-)}
-
-className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
-
->
-
-<XCircle size={18}/>
-
-Reject
-
-</button>
-
-
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-
-
-))}
-
-
-
-</div>
-
-
-
-)}
-
-
-
-
-
-</div>
-
-
-</>
+    </>
 
   );
 

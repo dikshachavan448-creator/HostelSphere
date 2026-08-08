@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AdminNavbar from "../components/adminnavbar";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 import {
   FileWarning,
@@ -9,94 +10,115 @@ import {
   CheckCircle,
   CalendarDays,
   Users,
+  RefreshCw,
+  LoaderCircle,
+  Bell,
 } from "lucide-react";
 
 
 function AdminDashboard() {
 
-
   const [complaints, setComplaints] = useState([]);
-  const [leaveCount, setLeaveCount] = useState(0);
-  const [studentCount, setStudentCount] = useState(0);
+  const [leaves, setLeaves] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [notices, setNotices] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
 
 
-  const totalComplaints = complaints.length;
-
-
-  const pendingComplaints = complaints.filter(
-    (complaint)=>complaint.status==="Pending"
-  ).length;
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
 
 
 
-  const inProgressComplaints = complaints.filter(
-    (complaint)=>complaint.status==="In Progress"
-  ).length;
+  const fetchDashboardData = async () => {
 
+    try {
 
-
-  const resolvedComplaints = complaints.filter(
-    (complaint)=>complaint.status==="Resolved"
-  ).length;
-
-
-
-  useEffect(()=>{
-
-    fetchComplaints();
-    fetchLeaveCount();
-    fetchStudents();
-
-  },[]);
-
-
-
-
-
-
-  const fetchComplaints = async()=>{
-
-
-    try{
+      setLoading(true);
 
       const token = localStorage.getItem("adminToken");
 
 
-      const response = await axios.get(
-
-        "http://localhost:5000/api/complaints/all",
-
-        {
-          headers:{
-            Authorization:`Bearer ${token}`
-          }
+      const config = {
+        headers:{
+          Authorization:`Bearer ${token}`
         }
+      };
 
-      );
+
+      const [
+        complaintsRes,
+        leavesRes,
+        studentsRes,
+        noticesRes
+      ] = await Promise.all([
+
+
+        axios.get(
+          "http://localhost:5000/api/complaints/all",
+          config
+        ),
+
+
+        axios.get(
+          "http://localhost:5000/api/leaves/all",
+          config
+        ),
+
+
+        axios.get(
+          "http://localhost:5000/api/users/students",
+          config
+        ),
+
+
+        axios.get(
+          "http://localhost:5000/api/notices",
+          config
+        )
+
+      ]);
+
 
 
       setComplaints(
-        response.data.complaints || []
+        complaintsRes.data.complaints || []
       );
 
 
-    }catch(error){
-
-      console.log(
-        error.response?.data || error.message
+      setLeaves(
+        leavesRes.data.leaves || []
       );
 
 
-      setError("Failed to load complaints");
+      setStudents(
+        studentsRes.data.students || []
+      );
 
 
-    }finally{
+      setNotices(
+        noticesRes.data.notices || []
+      );
+
+
+
+    } catch(error){
+
+      console.log(error);
+
+      toast.error(
+        "Failed to load dashboard"
+      );
+
+
+    } finally {
 
       setLoading(false);
+      setRefreshing(false);
 
     }
 
@@ -105,363 +127,323 @@ function AdminDashboard() {
 
 
 
+  const handleRefresh = () => {
+
+    setRefreshing(true);
+    fetchDashboardData();
+
+  };
 
 
 
-  const fetchLeaveCount = async()=>{
+
+  const getStatusColor=(status)=>{
+
+    if(status==="Pending")
+      return "bg-yellow-100 text-yellow-700";
 
 
-    try{
+    if(status==="In Progress")
+      return "bg-blue-100 text-blue-700";
 
 
-      const token = localStorage.getItem("adminToken");
+    if(status==="Resolved")
+      return "bg-green-100 text-green-700";
 
 
-      const response = await axios.get(
+    return "bg-gray-100 text-gray-700";
 
-        "http://localhost:5000/api/leaves/all",
+  };
+
+
+
+  return (
+
+    <div className="flex">
+
+
+      {/* SIDEBAR */}
+      <AdminNavbar />
+
+
+
+      {/* MAIN CONTENT */}
+
+      <main className="ml-64 flex-1 min-h-screen bg-gray-100 p-10">
+
+
+        <div className="flex justify-between items-center mb-8">
+
+
+          <h1 className="text-4xl font-bold text-purple-700">
+            Admin Dashboard
+          </h1>
+
+
+
+          <button
+            onClick={handleRefresh}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-3 rounded-xl flex items-center gap-2"
+          >
+
+            {
+              refreshing ?
+
+              <LoaderCircle
+                size={18}
+                className="animate-spin"
+              />
+
+              :
+
+              <RefreshCw size={18}/>
+
+            }
+
+
+            Refresh
+
+          </button>
+
+
+        </div>
+
+
+
+
 
         {
-          headers:{
-            Authorization:`Bearer ${token}`
+          loading ?
+
+
+          <div className="bg-white rounded-2xl shadow-lg p-12 flex flex-col items-center">
+
+
+            <LoaderCircle
+              size={40}
+              className="animate-spin text-purple-600 mb-4"
+            />
+
+
+            <p className="text-xl">
+              Loading Dashboard...
+            </p>
+
+
+          </div>
+
+
+
+          :
+
+
+
+          <>
+
+
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10">
+
+
+            <StatCard
+              title="Total Complaints"
+              value={complaints.length}
+              icon={<FileWarning/>}
+            />
+
+
+            <StatCard
+              title="Pending"
+              value={
+                complaints.filter(
+                  c=>c.status==="Pending"
+                ).length
+              }
+              icon={<Clock3/>}
+            />
+
+
+            <StatCard
+              title="In Progress"
+              value={
+                complaints.filter(
+                  c=>c.status==="In Progress"
+                ).length
+              }
+              icon={<Wrench/>}
+            />
+
+
+            <StatCard
+              title="Resolved"
+              value={
+                complaints.filter(
+                  c=>c.status==="Resolved"
+                ).length
+              }
+              icon={<CheckCircle/>}
+            />
+
+
+            <StatCard
+              title="Students"
+              value={students.length}
+              icon={<Users/>}
+            />
+
+
+            <StatCard
+              title="Leave Requests"
+              value={leaves.length}
+              icon={<CalendarDays/>}
+            />
+
+
+          </div>
+
+
+
+
+
+          <Section title="Recent Complaints">
+
+
+          {
+            complaints.slice(0,5).map(item=>(
+
+
+              <div
+                key={item._id}
+                className="border rounded-xl p-5"
+              >
+
+                <div className="flex justify-between">
+
+
+                  <div>
+
+                    <h3 className="text-xl font-semibold">
+                      {item.title}
+                    </h3>
+
+
+                    <p>
+                      Student: {item.student?.name || "N/A"}
+                    </p>
+
+
+                    <p>
+                      Category: {item.category}
+                    </p>
+
+
+                  </div>
+
+
+
+                  <span
+                    className={`px-4 py-2 rounded-full h-fit ${getStatusColor(item.status)}`}
+                  >
+
+                    {item.status}
+
+                  </span>
+
+
+                </div>
+
+
+              </div>
+
+
+            ))
           }
+
+
+          </Section>
+
+
+
+
+          <Section title="Recent Leave Requests">
+
+          {
+            leaves.slice(0,5).map(leave=>(
+
+              <div
+                key={leave._id}
+                className="border rounded-xl p-5"
+              >
+
+                <h3 className="font-semibold text-xl">
+                  {leave.student?.name || "Student"}
+                </h3>
+
+                <p>
+                  Destination: {leave.destination}
+                </p>
+
+                <p>
+                  Status: {leave.status}
+                </p>
+
+
+              </div>
+
+            ))
+          }
+
+
+          </Section>
+
+
+
+
+          <Section title="Recent Notices">
+
+
+          {
+            notices.slice(0,5).map(notice=>(
+
+              <div
+                key={notice._id}
+                className="border rounded-xl p-5"
+              >
+
+                <h3 className="font-semibold text-xl">
+                  {notice.title}
+                </h3>
+
+
+                <p>
+                  {notice.category}
+                </p>
+
+
+              </div>
+
+
+            ))
+          }
+
+
+          </Section>
+
+
+          </>
+
         }
 
-      );
 
 
-      setLeaveCount(
-        response.data.leaves?.length || 0
-      );
+      </main>
 
 
-    }catch(error){
+    </div>
 
-      console.log(
-        "Leave count error:",
-        error.response?.data || error.message
-      );
-
-    }
-
-
-  };
-
-
-
-
-
-
-
-  const fetchStudents = async()=>{
-
-
-    try{
-
-
-      const token = localStorage.getItem("adminToken");
-
-
-      const response = await axios.get(
-
-        "http://localhost:5000/api/users/students",
-
-        {
-
-          headers:{
-
-            Authorization:`Bearer ${token}`
-
-          }
-
-        }
-
-      );
-
-
-      setStudentCount(
-
-        response.data.students?.length || 0
-
-      );
-
-
-
-    }catch(error){
-
-
-      console.log(
-
-        "Student count error:",
-
-        error.response?.data || error.message
-
-      );
-
-
-    }
-
-
-  };
-
-
-
-
-
-
-
-
-return (
-
-<>
-
-<AdminNavbar />
-
-
-<div className="ml-64 min-h-screen bg-gray-100 p-10">
-
-
-<h1 className="text-4xl font-bold text-purple-700 mb-8">
-
-Admin Dashboard
-
-</h1>
-
-
-
-
-{loading && (
-
-<div className="bg-white p-8 rounded-2xl shadow">
-
-Loading dashboard...
-
-</div>
-
-)}
-
-
-
-
-
-{error && (
-
-<div className="bg-red-100 text-red-700 p-5 rounded-xl">
-
-{error}
-
-</div>
-
-)}
-
-
-
-
-
-
-{!loading && !error && (
-
-<>
-
-
-<div className="grid md:grid-cols-3 gap-6">
-
-
-
-<StatCard
-title="Total Complaints"
-value={totalComplaints}
-icon={<FileWarning size={42}/>}
-/>
-
-
-
-<StatCard
-title="Pending"
-value={pendingComplaints}
-icon={<Clock3 size={42}/>}
-/>
-
-
-
-<StatCard
-title="In Progress"
-value={inProgressComplaints}
-icon={<Wrench size={42}/>}
-/>
-
-
-
-<StatCard
-title="Resolved"
-value={resolvedComplaints}
-icon={<CheckCircle size={42}/>}
-/>
-
-
-
-<StatCard
-title="Students"
-value={studentCount}
-icon={<Users size={42}/>}
-/>
-
-
-
-<StatCard
-title="Leave Requests"
-value={leaveCount}
-icon={<CalendarDays size={42}/>}
-/>
-
-
-
-</div>
-
-
-
-
-
-
-<div className="bg-white rounded-2xl shadow-lg mt-10 p-6">
-
-
-<h2 className="text-2xl font-bold text-purple-700 mb-6">
-
-Recent Complaints
-
-</h2>
-
-
-
-
-{
-complaints.length===0 ? (
-
-<p className="text-gray-500">
-
-No complaints available.
-
-</p>
-
-
-):(
-
-
-<div className="space-y-4">
-
-
-{
-
-complaints.slice(0,5).map((item)=>(
-
-
-<div
-
-key={item._id}
-
-className="border rounded-xl p-4"
-
->
-
-
-<div className="flex justify-between">
-
-
-<div>
-
-
-<h3 className="font-semibold text-lg">
-
-{item.title}
-
-</h3>
-
-
-<p className="text-gray-600">
-
-Category: {item.category}
-
-</p>
-
-
-<p className="text-gray-500">
-
-Room: {item.room}
-
-</p>
-
-
-<p className="text-gray-500">
-
-Student: {item.student?.name || "Unknown"}
-
-</p>
-
-
-<p className="text-gray-500">
-
-Roll No: {item.student?.rollNumber || "N/A"}
-
-</p>
-
-
-
-</div>
-
-
-
-<span className="bg-purple-100 text-purple-700 px-4 py-2 rounded-full">
-
-{item.status}
-
-</span>
-
-
-
-</div>
-
-
-</div>
-
-
-))
-
+  );
 
 }
-
-
-
-</div>
-
-
-)
-
-}
-
-
-
-</div>
-
-
-
-</>
-
-)}
-
-
-
-</div>
-
-
-</>
-
-);
-
-
-}
-
-
 
 
 
@@ -469,37 +451,29 @@ Roll No: {item.student?.rollNumber || "N/A"}
 
 function StatCard({title,value,icon}){
 
-
 return (
 
-<div className="bg-white rounded-2xl shadow-lg p-6">
-
-
-<div className="flex justify-between items-center">
+<div className="bg-white rounded-2xl shadow-lg p-6 flex justify-between items-center">
 
 
 <div>
 
 <p className="text-gray-500">
-
 {title}
-
 </p>
 
 
 <h2 className="text-4xl font-bold mt-2">
-
 {value}
-
 </h2>
 
 
 </div>
 
 
+
+<div className="bg-purple-600 text-white p-4 rounded-xl">
 {icon}
-
-
 </div>
 
 
@@ -507,6 +481,33 @@ return (
 
 );
 
+}
+
+
+
+
+function Section({title,children}){
+
+return (
+
+<div className="bg-white rounded-3xl shadow-lg p-8 mb-8">
+
+
+<h2 className="text-3xl font-bold text-purple-700 mb-6">
+{title}
+</h2>
+
+
+<div className="space-y-5">
+
+{children}
+
+</div>
+
+
+</div>
+
+);
 
 }
 

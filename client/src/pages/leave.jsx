@@ -1,112 +1,101 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/navbar";
-import { ArrowLeft, Plane } from "lucide-react";
+import { ArrowLeft, Plane, LoaderCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import toast from "react-hot-toast";
 
 
 function Leave() {
-
 
   const rollNumber =
     localStorage.getItem("loggedInRollNumber") || "";
 
 
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token");
 
 
-  const [reason,setReason] = useState("");
-  const [destination,setDestination] = useState("");
-  const [departureDate,setDepartureDate] = useState("");
-  const [returnDate,setReturnDate] = useState("");
-  const [parentContact,setParentContact] = useState("");
-  const [emergencyContact,setEmergencyContact] = useState("");
+  const [reason, setReason] = useState("");
+  const [destination, setDestination] = useState("");
+  const [departureDate, setDepartureDate] = useState("");
+  const [returnDate, setReturnDate] = useState("");
+  const [parentContact, setParentContact] = useState("");
+  const [emergencyContact, setEmergencyContact] = useState("");
 
+  const [leaveHistory, setLeaveHistory] = useState([]);
 
-  const [leaveHistory,setLeaveHistory] = useState([]);
-
-
-  const [message,setMessage] = useState("");
-  const [messageType,setMessageType] = useState("");
-
-
+  const [loading, setLoading] = useState(false);
+  const [fetchLoading, setFetchLoading] = useState(false);
 
 
 
-  useEffect(()=>{
+  useEffect(() => {
 
     fetchLeaves();
 
-  },[]);
+  }, []);
 
 
 
+  const fetchLeaves = async () => {
 
+    try {
 
-
-
-  const fetchLeaves = async()=>{
-
-
-    try{
+      setFetchLoading(true);
 
 
       const response = await axios.get(
-
         "http://localhost:5000/api/leaves/my",
-
         {
-
           headers:{
-
-            Authorization:`Bearer ${token}`
-
-          }
-
+            Authorization:`Bearer ${token}`,
+          },
         }
-
       );
-
-
-
-      console.log(
-        "Student Leaves:",
-        response.data
-      );
-
 
 
       setLeaveHistory(
-
         response.data.leaves || []
-
       );
 
 
-
-    }catch(error){
+    } catch(error) {
 
 
       console.log(
-
         "Fetch Leave Error:",
         error.response?.data || error.message
-
       );
 
 
-    }
+      if(error.response?.status === 401){
 
+        toast.error(
+          "Session expired. Please login again."
+        );
+
+      }else{
+
+        toast.error(
+          "Failed to load leave history."
+        );
+
+      }
+
+
+    }finally{
+
+      setFetchLoading(false);
+
+    }
 
   };
 
 
 
 
-
-
-
-  const handleSubmit = async()=>{
+  const handleSubmit = async () => {
 
 
     if(
@@ -118,8 +107,9 @@ function Leave() {
       !emergencyContact
     ){
 
-      setMessage("Please fill all the fields.");
-      setMessageType("error");
+      toast.error(
+        "Please fill all the fields."
+      );
 
       return;
 
@@ -133,18 +123,13 @@ function Leave() {
       !/^[0-9]{10}$/.test(emergencyContact)
     ){
 
-      setMessage(
+      toast.error(
         "Phone numbers must contain exactly 10 digits."
       );
-
-      setMessageType("error");
 
       return;
 
     }
-
-
-
 
 
 
@@ -152,11 +137,9 @@ function Leave() {
       new Date(returnDate) < new Date(departureDate)
     ){
 
-      setMessage(
+      toast.error(
         "Return date cannot be before departure date."
       );
-
-      setMessageType("error");
 
       return;
 
@@ -164,11 +147,10 @@ function Leave() {
 
 
 
-
-
-
-
     try{
+
+      setLoading(true);
+
 
 
       await axios.post(
@@ -176,36 +158,27 @@ function Leave() {
         "http://localhost:5000/api/leaves",
 
         {
-
           destination,
           reason,
           departureDate,
           returnDate,
           parentContact,
-          emergencyContact
-
+          emergencyContact,
         },
 
-
         {
-
           headers:{
-
-            Authorization:`Bearer ${token}`
-
-          }
-
+            Authorization:`Bearer ${token}`,
+          },
         }
 
       );
 
 
 
-      setMessage(
+      toast.success(
         "Leave request submitted successfully!"
       );
-
-      setMessageType("success");
 
 
 
@@ -225,15 +198,15 @@ function Leave() {
     }catch(error){
 
 
-      setMessage(
-
+      toast.error(
         error.response?.data?.message ||
-        "Something went wrong"
-
+        "Something went wrong."
       );
 
-      setMessageType("error");
 
+    }finally{
+
+      setLoading(false);
 
     }
 
@@ -242,24 +215,15 @@ function Leave() {
 
 
 
-
-
-
-
-
-  const statusColor=(status)=>{
+  const statusColor = (status)=>{
 
 
     if(status==="Approved")
-
       return "bg-green-100 text-green-700";
 
 
-
     if(status==="Rejected")
-
       return "bg-red-100 text-red-700";
-
 
 
     return "bg-yellow-100 text-yellow-700";
@@ -269,351 +233,314 @@ function Leave() {
 
 
 
+  return (
 
+    <>
 
+      <Navbar />
 
 
-return (
+      <div className="ml-64 min-h-screen bg-gray-100 p-10">
 
-<>
 
-<Navbar />
+        <Link
+          to="/dashboard"
+          className="flex items-center gap-2 text-purple-600 mb-8"
+        >
 
+          <ArrowLeft size={20}/>
 
-<div className="ml-64 min-h-screen bg-gray-100 p-10">
+          Back to Dashboard
 
+        </Link>
 
-<Link
-to="/dashboard"
-className="flex items-center gap-2 text-purple-600 mb-8"
->
 
-<ArrowLeft size={20}/>
 
-Back to Dashboard
+        <div className="bg-white rounded-3xl shadow-lg p-8">
 
-</Link>
 
+          <h1 className="text-4xl font-bold text-purple-700">
 
+            Leave Request
 
+          </h1>
 
 
-<div className="bg-white rounded-3xl shadow-lg p-8">
+          <p className="text-gray-500 mb-6">
 
+            Submit your hostel leave request.
 
+          </p>
 
-<h1 className="text-4xl font-bold text-purple-700">
 
-Leave Request
+          <div className="grid md:grid-cols-2 gap-6">
 
-</h1>
 
+            <input
+              value={rollNumber}
+              readOnly
+              className="border rounded-xl p-4 bg-gray-200"
+            />
 
-<p className="text-gray-500 mb-6">
 
-Submit your hostel leave request.
+            <input
+              placeholder="Destination"
+              value={destination}
+              onChange={(e)=>setDestination(e.target.value)}
+              className="border rounded-xl p-4"
+            />
 
-</p>
 
+            <input
+              placeholder="Reason"
+              value={reason}
+              onChange={(e)=>setReason(e.target.value)}
+              className="border rounded-xl p-4"
+            />
 
 
+            <input
+              type="date"
+              value={departureDate}
+              onChange={(e)=>setDepartureDate(e.target.value)}
+              className="border rounded-xl p-4"
+            />
 
 
-{message && (
+            <input
+              type="date"
+              value={returnDate}
+              onChange={(e)=>setReturnDate(e.target.value)}
+              className="border rounded-xl p-4"
+            />
 
-<div
-className={`p-4 rounded-xl mb-6 ${
-messageType==="success"
-?
-"bg-green-100 text-green-700"
-:
-"bg-red-100 text-red-700"
-}`}
->
 
-{message}
+            <input
+              placeholder="Parent Contact"
+              value={parentContact}
+              onChange={(e)=>setParentContact(e.target.value)}
+              className="border rounded-xl p-4"
+            />
 
-</div>
 
-)}
+            <input
+              placeholder="Emergency Contact"
+              value={emergencyContact}
+              onChange={(e)=>setEmergencyContact(e.target.value)}
+              className="border rounded-xl p-4"
+            />
 
 
+          </div>
+          
+          <button
 
+            onClick={handleSubmit}
 
+            disabled={loading}
 
+            className={`mt-8 px-8 py-4 rounded-xl text-white flex items-center gap-2 transition ${
+              loading
+              ? "bg-purple-400 cursor-not-allowed"
+              : "bg-purple-600 hover:bg-purple-700"
+            }`}
 
+          >
 
-<div className="grid md:grid-cols-2 gap-6">
+            {loading ? (
 
+              <>
 
+                <LoaderCircle
+                  size={20}
+                  className="animate-spin"
+                />
 
-<div>
+                Submitting...
 
-<label>Roll Number</label>
+              </>
 
-<input
 
-value={rollNumber}
+            ) : (
 
-readOnly
+              <>
 
-className="w-full border rounded-xl p-4 bg-gray-200"
+                <Plane size={20}/>
 
- />
+                Submit Leave Request
 
-</div>
+              </>
 
 
+            )}
 
 
+          </button>
 
-<input
 
-placeholder="Destination"
 
-value={destination}
 
-onChange={(e)=>setDestination(e.target.value)}
 
-className="border rounded-xl p-4"
+          <h2 className="text-2xl font-bold text-purple-700 mt-12 mb-5">
 
-/>
+            Leave History
 
+          </h2>
 
 
 
-<input
 
-placeholder="Reason"
 
-value={reason}
+          {fetchLoading ? (
 
-onChange={(e)=>setReason(e.target.value)}
 
-className="border rounded-xl p-4"
+            <div className="flex justify-center py-10">
 
-/>
+              <LoaderCircle
 
+                size={35}
 
+                className="animate-spin text-purple-600"
 
+              />
 
-<input
+            </div>
 
-type="date"
 
-value={departureDate}
 
-onChange={(e)=>setDepartureDate(e.target.value)}
+          ) : leaveHistory.length === 0 ? (
 
-className="border rounded-xl p-4"
 
-/>
 
+            <div className="bg-gray-100 p-8 rounded-xl text-center">
 
+              No leave requests submitted yet.
 
+            </div>
 
-<input
 
-type="date"
 
-value={returnDate}
+          ) : (
 
-onChange={(e)=>setReturnDate(e.target.value)}
 
-className="border rounded-xl p-4"
 
-/>
+            <div className="space-y-5">
 
 
+              {leaveHistory.map((leave)=>(
 
 
-<input
+                <div
 
-placeholder="Parent Contact"
+                  key={leave._id}
 
-value={parentContact}
+                  className="bg-gray-50 border rounded-2xl p-6"
 
-onChange={(e)=>setParentContact(e.target.value)}
+                >
 
-className="border rounded-xl p-4"
 
-/>
 
+                  <div className="flex justify-between">
 
 
+                    <div>
 
-<input
 
-placeholder="Emergency Contact"
+                      <h3 className="text-xl font-bold">
 
-value={emergencyContact}
+                        {leave.destination}
 
-onChange={(e)=>setEmergencyContact(e.target.value)}
+                      </h3>
 
-className="border rounded-xl p-4"
 
-/>
 
+                      <p>
 
+                        <strong>
+                          Reason:
+                        </strong>{" "}
 
-</div>
+                        {leave.reason}
 
+                      </p>
 
 
 
+                      <p>
 
+                        <strong>
+                          From:
+                        </strong>{" "}
 
-<button
+                        {new Date(
+                          leave.departureDate
+                        ).toLocaleDateString()}
 
-onClick={handleSubmit}
+                      </p>
 
-className="mt-8 bg-purple-600 text-white px-8 py-4 rounded-xl flex gap-2"
 
->
 
-<Plane size={20}/>
 
-Submit Leave Request
+                      <p>
 
-</button>
+                        <strong>
+                          To:
+                        </strong>{" "}
 
+                        {new Date(
+                          leave.returnDate
+                        ).toLocaleDateString()}
 
+                      </p>
 
 
 
+                    </div>
 
 
 
 
-<h2 className="text-2xl font-bold text-purple-700 mt-12 mb-5">
 
-Leave History
+                    <span
 
-</h2>
+                      className={`px-4 py-2 rounded-full h-fit ${statusColor(
+                        leave.status
+                      )}`}
 
+                    >
 
+                      {leave.status}
 
+                    </span>
 
 
 
-{
+                  </div>
 
-leaveHistory.length===0 ?
 
 
-(
+                </div>
 
-<div className="bg-gray-100 p-8 rounded-xl text-center">
 
-No leave requests submitted yet.
+              ))}
 
-</div>
 
+            </div>
 
-)
 
+          )}
 
-:
 
 
-(
+        </div>
 
-<div className="space-y-5">
 
+      </div>
 
-{
 
-leaveHistory.map((leave)=>(
+    </>
 
-
-<div
-
-key={leave._id}
-
-className="bg-gray-50 border rounded-2xl p-6"
-
->
-
-
-<div className="flex justify-between">
-
-
-<div>
-
-
-<h3 className="text-xl font-bold">
-
-{leave.destination}
-
-</h3>
-
-
-<p>
-<strong>Reason:</strong> {leave.reason}
-</p>
-
-
-<p>
-<strong>From:</strong> {leave.departureDate}
-</p>
-
-
-<p>
-<strong>To:</strong> {leave.returnDate}
-</p>
-
-
-</div>
-
-
-
-
-
-<span
-
-className={`px-4 py-2 rounded-full h-fit ${statusColor(leave.status)}`}
-
->
-
-{leave.status}
-
-</span>
-
-
-
-
-</div>
-
-
-</div>
-
-
-))
-
-
-}
-
-
-</div>
-
-
-)
-
-
-}
-
-
-
-</div>
-
-
-</div>
-
-
-</>
-
-);
-
+  );
 
 }
 
