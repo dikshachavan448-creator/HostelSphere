@@ -5,17 +5,19 @@ dns.setServers([
   "8.8.4.4",
 ]);
 
-require("dotenv").config();
+require("dotenv").config({
+  path: require("path").resolve(__dirname, "../.env"),
+});
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const connectDB = require("../config/db");
 
-const User = require("../models/User");
-const Complaint = require("../models/Complaint");
-const Leave = require("../models/Leave");
-const Notice = require("../models/Notice");
+const User = require("../models/user");
+const Complaint = require("../models/complaint");
+const Leave = require("../models/leave");
+const Notice = require("../models/notice");
 
 const seedData = async () => {
   try {

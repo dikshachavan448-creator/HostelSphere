@@ -12,25 +12,12 @@ const {
 } = require("../controllers/complaintController");
 
 
-
-// ==============================
-// Student Routes
-// ==============================
-
-
-// Create Complaint
-// POST /api/complaints
-
 router.post(
   "/",
   authMiddleware,
   createComplaint
 );
 
-
-
-// Get Logged-in Student Complaints
-// GET /api/complaints
 
 router.get(
   "/",
@@ -39,27 +26,11 @@ router.get(
 );
 
 
-
-
-
-// ==============================
-// Admin Routes
-// ==============================
-
-
-// Get All Complaints
-// GET /api/complaints/all
-
 router.get(
   "/all",
   authMiddleware,
   getAllComplaints
 );
-
-
-
-// Update Complaint Status
-// PUT /api/complaints/:id/status
 
 router.put(
   "/:id/status",

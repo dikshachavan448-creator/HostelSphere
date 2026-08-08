@@ -1,10 +1,5 @@
-const Leave = require("../models/Leave");
+const Leave = require("../models/leave");
 
-
-
-// ==============================
-// Student creates leave
-// ==============================
 
 const createLeave = async (req, res) => {
 
@@ -50,14 +45,6 @@ const createLeave = async (req, res) => {
 };
 
 
-
-
-
-
-// ==============================
-// Student gets own leaves
-// ==============================
-
 const getMyLeaves = async(req,res)=>{
 
   try{
@@ -98,14 +85,6 @@ const getMyLeaves = async(req,res)=>{
 
 };
 
-
-
-
-
-
-// ==============================
-// Admin gets all leaves
-// ==============================
 
 const getAllLeaves = async(req,res)=>{
 
@@ -149,15 +128,6 @@ const getAllLeaves = async(req,res)=>{
 
 };
 
-
-
-
-
-
-
-// ==============================
-// Admin updates status
-// ==============================
 
 const updateLeaveStatus = async(req,res)=>{
 

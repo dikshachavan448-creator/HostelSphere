@@ -1,11 +1,6 @@
-const User = require("../models/User");
+const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-
-// =============================
-// Register User
-// =============================
 
 const registerUser = async (req, res) => {
 
@@ -115,17 +110,6 @@ const registerUser = async (req, res) => {
 };
 
 
-
-
-
-
-
-// =============================
-// Login User
-// Student -> Roll Number
-// Admin/Staff/Warden -> Email
-// =============================
-
 const loginUser = async (req, res) => {
 
 
@@ -147,9 +131,6 @@ const loginUser = async (req, res) => {
     let user;
 
 
-
-    // Student login
-
     if (rollNumber) {
 
 
@@ -161,9 +142,6 @@ const loginUser = async (req, res) => {
 
 
     }
-
-
-    // Admin / Staff / Warden login
 
     else if (email) {
 
@@ -196,10 +174,6 @@ const loginUser = async (req, res) => {
     }
 
 
-
-
-
-
     const isMatch = await bcrypt.compare(
 
       password,
@@ -207,10 +181,6 @@ const loginUser = async (req, res) => {
       user.password
 
     );
-
-
-
-
 
     if (!isMatch) {
 
@@ -225,12 +195,6 @@ const loginUser = async (req, res) => {
 
 
     }
-
-
-
-
-
-
 
     const token = jwt.sign(
 
@@ -251,12 +215,6 @@ const loginUser = async (req, res) => {
       }
 
     );
-
-
-
-
-
-
 
     res.status(200).json({
 
@@ -288,11 +246,6 @@ const loginUser = async (req, res) => {
 
     });
 
-
-
-
-
-
   } catch(error) {
 
 
@@ -312,10 +265,6 @@ const loginUser = async (req, res) => {
 
 
 };
-
-
-
-
 
 module.exports = {
 

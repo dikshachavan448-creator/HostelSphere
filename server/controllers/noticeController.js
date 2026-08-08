@@ -1,7 +1,4 @@
-const Notice = require("../models/Notice");
-
-
-// Create Notice (Admin)
+const Notice = require("../models/notice");
 
 const createNotice = async(req,res)=>{
 
@@ -45,9 +42,6 @@ const notice = await Notice.create({
 
 
 
-
-// Get All Notices (Students + Admin)
-
 const getNotices = async(req,res)=>{
 
 
@@ -87,7 +81,6 @@ const getNotices = async(req,res)=>{
 
 };
 
-// Delete Notice (Admin)
 
 const deleteNotice = async (req, res) => {
 

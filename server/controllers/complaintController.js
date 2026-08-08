@@ -1,9 +1,5 @@
-const Complaint = require("../models/Complaint");
+const Complaint = require("../models/complaint");
 
-
-// ==============================
-// Create Complaint (Student)
-// ==============================
 
 const createComplaint = async (req, res) => {
   try {
@@ -58,12 +54,6 @@ const createComplaint = async (req, res) => {
 };
 
 
-
-
-// ==============================
-// Get Student Complaints
-// ==============================
-
 const getComplaints = async (req, res) => {
 
   try {
@@ -106,13 +96,6 @@ const getComplaints = async (req, res) => {
 
 };
 
-
-
-
-
-// ==============================
-// Admin - Get All Complaints
-// ==============================
 
 const getAllComplaints = async (req, res) => {
 
@@ -160,13 +143,6 @@ const getAllComplaints = async (req, res) => {
 
 };
 
-
-
-
-
-// ==============================
-// Admin - Update Complaint Status
-// ==============================
 
 const updateComplaintStatus = async (req, res) => {
 
