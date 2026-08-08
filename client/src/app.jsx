@@ -1,25 +1,22 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
 import Login from "./pages/login";
-
 import Dashboard from "./pages/dashboard";
-import CreateComplaint from "./pages/createcomplaint";
-import MyComplaints from "./pages/mycomplaints";
+import CreateComplaint from "./pages/createComplaint";
+import MyComplaints from "./pages/myComplaints";
 import Profile from "./pages/profile";
 import Leave from "./pages/leave";
 import NoticeBoard from "./pages/noticeboard";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/protectedRoute";
 
-import AdminLogin from "./pages/adminlogin";
-import AdminDashboard from "./pages/admindashboard";
+import AdminLogin from "./pages/adminLogin";
+import AdminDashboard from "./pages/adminDashboard";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
-import ManageComplaints from "./pages/managecomplaints";
-import ManageLeave from "./pages/manageleave";
-import ManageNotices from "./pages/managenotices";
-
-import ManageStudents from "./pages/managestudents";
+import ManageComplaints from "./pages/manageComplaints";
+import ManageLeave from "./pages/manageLeave";
+import ManageNotices from "./pages/manageNotices";
+import ManageStudents from "./pages/manageStudents";
 
 function App() {
 
