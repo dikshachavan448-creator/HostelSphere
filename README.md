@@ -4,7 +4,37 @@
 
 HostelSphere is a full-stack web application designed to simplify hostel management and improve communication between students and administrators.
 
-It provides students with an easy-to-use platform for managing complaints, leave requests, notices, and their hostel activities, while administrators can manage students and monitor hostel operations through a dedicated admin dashboard.
+Students can manage complaints, leave requests, notices, and hostel activities through a dedicated dashboard, while administrators can manage students, complaints, leave requests, and notices through a secure admin panel.
+
+---
+
+## 🚀 Live Demo
+
+🌐 **Frontend:**
+https://hostel-sphere-inky.vercel.app/
+
+🔗 **GitHub Repository:**
+https://github.com/dikshachavan448-creator/HostelSphere
+
+---
+
+## 🔑 Demo Credentials
+
+### 👨‍💼 Admin Account
+
+```text
+Email: admin@gmail.com
+Password: admin123
+```
+
+### 👨‍🎓 Demo Student Account
+
+```text
+Roll Number: ENTC006
+Password: diya04
+```
+
+> These credentials are provided for demonstration purposes only.
 
 ---
 
@@ -12,24 +42,26 @@ It provides students with an easy-to-use platform for managing complaints, leave
 
 ### 👨‍🎓 Student Module
 
-* 🔐 Student registration and login
-* 📊 Student dashboard
-* 📝 Submit hostel complaints
-* 📋 View personal complaints and their status
-* 🛫 Submit leave requests
-* 📅 View leave history and request status
-* 📢 View hostel notices
-* 🔒 JWT-based authentication
+*  Student login and authentication
+*  Personalized student dashboard
+*  Submit hostel complaints
+*  View submitted complaints and their status
+*  Submit leave requests
+*  View leave request history
+*  View hostel notices
+*  View student profile
+*  JWT-protected routes
 
 ### 👨‍💼 Admin Module
 
-* 🔐 Secure admin login
-* 📊 Admin dashboard
-* 👥 Manage students
-* 📝 Manage student complaints
-* 🛫 Manage leave requests
-* 📢 Manage hostel notices
-* 🔒 Role-based access control
+*  Secure admin authentication
+*  Admin dashboard with hostel statistics
+*  Manage registered students
+*  View and manage student complaints
+*  View and manage leave requests
+*  Create, update, and delete hostel notices
+*  Role-based access control
+*  Monitor hostel activities from a centralized dashboard
 
 ---
 
@@ -37,40 +69,87 @@ It provides students with an easy-to-use platform for managing complaints, leave
 
 ### Frontend
 
-* React.js
-* Vite
-* Tailwind CSS
-* React Router
-* Axios
-* Lucide React
+*  React.js
+*  Vite
+*  Tailwind CSS
+*  React Router
+*  Axios
+*  Lucide React
+*  React Hot Toast
 
 ### Backend
 
-* Node.js
-* Express.js
-* JWT Authentication
-* bcrypt.js
+*  Node.js
+*  Express.js
+*  JWT Authentication
+*  bcrypt.js
+*  REST API
+*  CORS
 
 ### Database
 
-* MongoDB
-* MongoDB Atlas
-* Mongoose
+*  MongoDB
+*  MongoDB Atlas
+*  Mongoose
+
+### Deployment
+
+*  **Vercel** — Frontend
+*  **Render** — Backend
+*  **MongoDB Atlas** — Database
 
 ---
 
-## 🔐 Authentication & Security
+##  Application Architecture
+
+```text
+                    ┌──────────────────────┐
+                    │       Students       │
+                    │          │           │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │    React + Vite      │
+                    │    Tailwind CSS      │
+                    └──────────┬───────────┘
+                               │
+                             Axios
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │   Node.js + Express  │
+                    │       REST API       │
+                    └──────────┬───────────┘
+                               │
+                    ┌──────────┴──────────┐
+                    │                     │
+                    ▼                     ▼
+             JWT Authentication      Mongoose
+                                          │
+                                          ▼
+                                ┌──────────────────┐
+                                │  MongoDB Atlas   │
+                                └──────────────────┘
+```
+
+---
+
+##  Authentication & Security
 
 HostelSphere uses JWT-based authentication to protect user accounts and application routes.
 
-The application supports:
+Security features include:
 
-* Student authentication
-* Admin authentication
-* Password hashing using bcrypt
-* Protected routes
-* Role-based access control
-* Environment variables for sensitive configuration
+*  JWT-based authentication
+*  Protected student routes
+*  Protected admin routes
+*  Role-based access control
+*  Password hashing using bcrypt
+*  Environment variables for sensitive configuration
+*  Unauthorized access prevention
+
+The backend validates authentication tokens before allowing access to protected resources.
 
 ---
 
@@ -83,7 +162,8 @@ HostelSphere/
 │   ├── src/
 │   │   ├── components/
 │   │   ├── pages/
-│   │   └── ...
+│   │   ├── app.jsx
+│   │   └── main.jsx
 │   └── package.json
 │
 ├── server/
@@ -103,36 +183,6 @@ HostelSphere/
 
 ---
 
-## 🚀 Live Demo
-
-**Coming soon — deployment in progress.**
-
-Once deployed, the live application will be available here:
-
-🔗 **[HostelSphere Live Demo](YOUR_DEPLOYED_URL)**
-
----
-
-## 🔑 Demo Credentials
-
-### Admin Account
-
-```text
-Email: admin@gmail.com
-Password: admin123
-```
-
-### Demo Student Account
-
-```text
-Roll number : ENTC006
-Password: diya04
-```
-
-> These credentials are provided for demonstration purposes only.
-
----
-
 ## ⚙️ Running the Project Locally
 
 ### 1. Clone the repository
@@ -149,20 +199,20 @@ cd HostelSphere
 
 ### 3. Install dependencies
 
-Install the root dependencies:
+Install root dependencies:
 
 ```bash
 npm install
 ```
 
-Then install frontend dependencies:
+Install frontend dependencies:
 
 ```bash
 cd client
 npm install
 ```
 
-Then install backend dependencies:
+Install backend dependencies:
 
 ```bash
 cd ../server
@@ -171,16 +221,14 @@ npm install
 
 ### 4. Configure environment variables
 
-Create the required `.env` file in the server directory.
-
-Example:
+Create a `.env` file inside the `server` directory:
 
 ```env
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 ```
 
-> Never commit your `.env` file to GitHub.
+> ⚠️ Never commit `.env` files or database credentials to GitHub.
 
 ### 5. Start the backend
 
@@ -192,56 +240,147 @@ npm run dev
 
 ### 6. Start the frontend
 
-From the `client` directory:
+Open another terminal:
 
 ```bash
+cd client
 npm run dev
 ```
 
-The application can then be accessed through the local Vite development URL.
+The application will be available through the Vite development URL.
 
 ---
 
-## 🌱 Demo Data
+##  Demo Data
 
-The project includes a seed script for creating demonstration data such as:
+HostelSphere includes a seed script for generating demonstration data.
 
-* Admin account
-* Student accounts
-* Sample complaints
-* Sample leave requests
-* Sample notices
+The seed data can include:
 
-The seed data is designed to preserve existing database records rather than deleting them.
+*  Admin account
+*  Student accounts
+*  Sample complaints
+*  Sample leave requests
+*  Sample notices
+
+The seed process is designed to preserve existing database records rather than unnecessarily deleting them.
 
 ---
 
-## 🎯 Project Goals
+## 📊 Main Application Modules
+
+| Module             | Description                                |
+| ------------------ | ------------------------------------------ |
+| Authentication     | Student and admin login using JWT          |
+| Student Dashboard  | Overview of complaints, leaves and notices |
+| Complaints         | Submit, track and manage complaints        |
+| Leave Management   | Submit and manage leave requests           |
+| Notice Board       | Display hostel announcements               |
+| Student Management | Admin management of registered students    |
+| Admin Dashboard    | Centralized hostel management statistics   |
+| Admin Controls     | Manage complaints, leaves and notices      |
+
+---
+
+## 🎯 Project Objectives
 
 HostelSphere was developed to provide a centralized digital platform for common hostel management activities.
 
 The project focuses on:
 
 * Simplifying hostel administration
-* Improving student communication
-* Digitizing complaint and leave management
-* Providing role-based access
-* Maintaining centralized hostel data
+* Digitizing hostel complaint management
+* Streamlining leave request management
+* Improving communication between students and administrators
+* Providing centralized hostel information
+* Implementing secure role-based access
+* Reducing dependency on manual hostel management processes
 
 ---
 
 ## 📸 Screenshots
 
-Screenshots of the application will be added here.
+### Student Dashboard
+
+*Add your student dashboard screenshot here.*
+
+### Complaint Management
+
+*Add your complaint page screenshot here.*
+
+### Leave Management
+
+*Add your leave page screenshot here.*
+
+### Notice Board
+
+*Add your notice board screenshot here.*
+
+### Admin Dashboard
+
+*Add your admin dashboard screenshot here.*
+
+### Admin Management
+
+*Add your admin management screenshots here.*
+
+---
+
+## 🚀 Deployment
+
+HostelSphere uses a modern cloud deployment architecture:
+
+```text
+GitHub
+   │
+   ├── Frontend ──► Vercel
+   │
+   └── Backend ───► Render
+                       │
+                       ▼
+                 MongoDB Atlas
+```
+
+The production frontend communicates with the deployed backend API, which connects to MongoDB Atlas for persistent data storage.
+
+---
+
+## 🔮 Future Improvements
+
+Potential future enhancements include:
+
+*  Improved mobile responsiveness
+*  Real-time notifications
+*  Email notifications
+*  Forgot password functionality
+*  Email verification
+*  Additional staff and warden roles
+*  Advanced analytics and reports
+*  Hostel event management
+*  Community discussion features
+*  Image/file uploads for complaints
 
 ---
 
 ## 👩‍💻 Author
 
-**Diksha Chavan**
+### Diksha Chavan
 
-Full-Stack Hostel Management & Community Platform built as a web development project.
+**Full-Stack Web Developer | ENTC Engineering Student**
+
+HostelSphere was developed as a full-stack web development project using React, Node.js, Express, and MongoDB.
+
+🔗 **GitHub:**
+https://github.com/dikshachavan448-creator
 
 ---
 
-⭐ If you find this project interesting, feel free to explore the repository and try the application once the live demo is available.
+##  Support
+
+If you find HostelSphere interesting, feel free to  the repository and explore the project.
+
+---
+
+###  HostelSphere
+
+**Simplifying hostel management through technology.**
