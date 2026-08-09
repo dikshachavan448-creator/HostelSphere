@@ -28,10 +28,7 @@ const seedData = async () => {
     console.log("Existing data will NOT be deleted.");
     console.log("================================");
 
-    // ==========================================
-    // CREATE ADMIN ONLY IF NOT EXISTS
-    // ==========================================
-
+  
     const adminPassword = await bcrypt.hash(
       "admin123",
       10
@@ -55,9 +52,6 @@ const seedData = async () => {
       console.log("Admin already exists.");
     }
 
-    // ==========================================
-    // CREATE STUDENTS ONLY IF NOT EXISTS
-    // ==========================================
 
     const studentPassword = await bcrypt.hash(
       "123456",
@@ -133,10 +127,7 @@ const seedData = async () => {
       students.push(student);
     }
 
-    // ==========================================
-    // CREATE DEMO COMPLAINTS
-    // ONLY IF THEY DON'T EXIST
-    // ==========================================
+   
 
     const complaintData = [
       {
@@ -202,10 +193,6 @@ const seedData = async () => {
       }
     }
 
-    // ==========================================
-    // CREATE DEMO LEAVES
-    // ONLY IF THEY DON'T EXIST
-    // ==========================================
 
     const leaveData = [
       {
@@ -267,11 +254,7 @@ const seedData = async () => {
       }
     }
 
-    // ==========================================
-    // CREATE DEMO NOTICES
-    // ONLY IF THEY DON'T EXIST
-    // ==========================================
-
+   
     const noticeData = [
       {
         title: "Hostel Maintenance Schedule",
@@ -334,13 +317,10 @@ const seedData = async () => {
       }
     }
 
-    // ==========================================
-    // FINISHED
-    // ==========================================
 
     console.log("");
     console.log("================================");
-    console.log("Demo Data Seeding Completed ✅");
+    console.log("Demo Data Seeding Completed ");
     console.log("================================");
 
     console.log("");
@@ -354,11 +334,11 @@ const seedData = async () => {
 
     console.log("");
     console.log(
-      "Existing manually registered users were preserved ✅"
+      "Existing manually registered users were preserved "
     );
 
     console.log(
-      "Existing complaints, leaves and notices were preserved ✅"
+      "Existing complaints, leaves and notices were preserved "
     );
 
     console.log("================================");
