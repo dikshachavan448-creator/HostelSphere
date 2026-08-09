@@ -33,7 +33,7 @@ function MyComplaints() {
 
 
       const response = await axios.get(
-        "${import.meta.env.VITE_API_URL}/complaints",
+        `${import.meta.env.VITE_API_URL}/complaints`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -461,3 +461,5 @@ function MyComplaints() {
 
 
 export default MyComplaints;
+
+

@@ -37,7 +37,7 @@ function ManageLeave() {
 
 
       const response = await axios.get(
-        "${import.meta.env.VITE_API_URL}/leaves/all",
+        `${import.meta.env.VITE_API_URL}/leaves/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -523,3 +523,5 @@ function ManageLeave() {
 
 
 export default ManageLeave;
+
+

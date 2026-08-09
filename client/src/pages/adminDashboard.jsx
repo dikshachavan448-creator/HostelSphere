@@ -59,25 +59,25 @@ function AdminDashboard() {
 
 
         axios.get(
-          "${import.meta.env.VITE_API_URL}/complaints/all",
+          `${import.meta.env.VITE_API_URL}/complaints/all`,
           config
         ),
 
 
         axios.get(
-          "${import.meta.env.VITE_API_URL}/leaves/all",
+          `${import.meta.env.VITE_API_URL}/leaves/all`,
           config
         ),
 
 
         axios.get(
-          "${import.meta.env.VITE_API_URL}/users/students",
+          `${import.meta.env.VITE_API_URL}/users/students`,
           config
         ),
 
 
         axios.get(
-          "${import.meta.env.VITE_API_URL}/notices",
+          `${import.meta.env.VITE_API_URL}/notices`,
           config
         )
 
@@ -514,3 +514,5 @@ return (
 
 
 export default AdminDashboard;
+
+

@@ -37,7 +37,7 @@ function ManageStudents() {
 
 
       const response = await axios.get(
-        "${import.meta.env.VITE_API_URL}/users/students",
+        `${import.meta.env.VITE_API_URL}/users/students`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -387,3 +387,5 @@ function ManageStudents() {
 
 
 export default ManageStudents;
+
+

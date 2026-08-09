@@ -49,7 +49,7 @@ function Dashboard() {
       const [complaintsRes, leavesRes, noticesRes] =
         await Promise.all([
           axios.get(
-            "${import.meta.env.VITE_API_URL}/complaints",
+            `${import.meta.env.VITE_API_URL}/complaints`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ function Dashboard() {
           ),
 
           axios.get(
-            "${import.meta.env.VITE_API_URL}/leaves/my",
+           `${import.meta.env.VITE_API_URL}/leaves/my`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ function Dashboard() {
           ),
 
           axios.get(
-            "${import.meta.env.VITE_API_URL}/notices",
+            `${import.meta.env.VITE_API_URL}/notices`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

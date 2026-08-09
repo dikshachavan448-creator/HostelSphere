@@ -36,7 +36,7 @@ function CreateComplaint() {
       }
 
       await axios.post(
-        "${import.meta.env.VITE_API_URL}/complaints",
+        `${import.meta.env.VITE_API_URL}/complaints`,
         {
           title,
           category,
@@ -248,3 +248,5 @@ function CreateComplaint() {
 }
 
 export default CreateComplaint;
+
+

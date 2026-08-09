@@ -50,7 +50,7 @@ function ManageNotices() {
 
       const response = await axios.get(
 
-        "${import.meta.env.VITE_API_URL}/notices",
+        `${import.meta.env.VITE_API_URL}/notices`,
 
         {
           headers: {
@@ -154,7 +154,7 @@ function ManageNotices() {
 
         await axios.post(
 
-          "${import.meta.env.VITE_API_URL}/notices",
+          `${import.meta.env.VITE_API_URL}/notices`,
 
           {
             title,
@@ -801,3 +801,5 @@ function ManageNotices() {
 
 
 export default ManageNotices;
+
+

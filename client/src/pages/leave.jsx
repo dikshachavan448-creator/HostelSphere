@@ -46,7 +46,7 @@ function Leave() {
 
 
       const response = await axios.get(
-        "${import.meta.env.VITE_API_URL}/leaves/my",
+        `${import.meta.env.VITE_API_URL}/leaves/my`,
         {
           headers:{
             Authorization:`Bearer ${token}`,
@@ -155,7 +155,7 @@ function Leave() {
 
       await axios.post(
 
-        "${import.meta.env.VITE_API_URL}/leaves",
+        `${import.meta.env.VITE_API_URL}/leaves`,
 
         {
           destination,
@@ -546,3 +546,5 @@ function Leave() {
 
 
 export default Leave;
+
+

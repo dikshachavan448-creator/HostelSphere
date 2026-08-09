@@ -31,7 +31,7 @@ function ManageComplaints() {
       const token = localStorage.getItem("adminToken");
 
       const res = await axios.get(
-        "${import.meta.env.VITE_API_URL}/complaints/all",
+        `${import.meta.env.VITE_API_URL}/complaints/all`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -468,3 +468,5 @@ function ManageComplaints() {
 
 
 export default ManageComplaints;
+
+
