@@ -33,20 +33,19 @@ function AdminLogin() {
         }
       );
 
-      // Check admin role
+      
       if (response.data.user.role !== "admin") {
         toast.error("Access denied. Admin account required.");
         setLoading(false);
         return;
       }
 
-      // Save admin token
       localStorage.setItem(
         "adminToken",
         response.data.token
       );
 
-      // Save admin details
+      
       localStorage.setItem(
         "admin",
         JSON.stringify(response.data.user)
