@@ -302,27 +302,36 @@ The project focuses on:
 
 ### Student Dashboard
 
-*Add your student dashboard screenshot here.*
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111109" src="https://github.com/user-attachments/assets/58f33e71-1b62-4a7e-be4b-d45298a2b314" />
+
 
 ### Complaint Management
 
-*Add your complaint page screenshot here.*
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111158" src="https://github.com/user-attachments/assets/63ae6a36-2786-4110-92cb-81ea7988896a" />
+
 
 ### Leave Management
 
-*Add your leave page screenshot here.*
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111244" src="https://github.com/user-attachments/assets/ff7f340e-0307-4373-90f2-d23d53c60270" />
+
 
 ### Notice Board
 
-*Add your notice board screenshot here.*
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111302" src="https://github.com/user-attachments/assets/beb3f8e9-9983-4f04-b68a-cf602ea04761" />
+
 
 ### Admin Dashboard
 
-*Add your admin dashboard screenshot here.*
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111405" src="https://github.com/user-attachments/assets/2925eabf-1834-411f-b037-6beebf309618" />
+
 
 ### Admin Management
 
-*Add your admin management screenshots here.*
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111526" src="https://github.com/user-attachments/assets/ec7820af-d79f-4bf7-adb3-6eb6e9722969" />
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111540" src="https://github.com/user-attachments/assets/3343bdee-1812-4880-b24e-6e8ca61a0cda" />
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111554" src="https://github.com/user-attachments/assets/28381e24-4172-4d32-b1df-8af4d05398c3" />
+<img width="1920" height="1200" alt="Screenshot 2026-08-09 111427" src="https://github.com/user-attachments/assets/90d40b84-101c-49de-b6d8-fdbc84798244" />
+
 
 ---
 
@@ -377,7 +386,7 @@ https://github.com/dikshachavan448-creator
 
 ##  Support
 
-If you find HostelSphere interesting, feel free to  the repository and explore the project.
+If you find HostelSphere interesting, feel free to explore the repository and the project.
 
 ---
 
