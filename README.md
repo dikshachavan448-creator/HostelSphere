@@ -18,26 +18,6 @@ https://github.com/dikshachavan448-creator/HostelSphere
 
 ---
 
-## 🔑 Demo Credentials
-
-### 👨‍💼 Admin Account
-
-```text
-Email: admin@gmail.com
-Password: admin123
-```
-
-### 👨‍🎓 Demo Student Account
-
-```text
-Roll Number: ENTC006
-Password: diya04
-```
-
-> These credentials are provided for demonstration purposes only.
-
----
-
 ## ✨ Features
 
 ### 👨‍🎓 Student Module
