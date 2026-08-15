@@ -8,7 +8,7 @@ Students can manage complaints, leave requests, notices, and hostel activities t
 
 ---
 
-## 🚀 Live Demo
+##  Live Demo
 
 🌐 **Frontend:**
 https://hostel-sphere-inky.vercel.app/
@@ -20,7 +20,7 @@ https://github.com/dikshachavan448-creator/HostelSphere
 
 ## ✨ Features
 
-### 👨‍🎓 Student Module
+###  Student Module
 
 *  Student login and authentication
 *  Personalized student dashboard
@@ -32,7 +32,7 @@ https://github.com/dikshachavan448-creator/HostelSphere
 *  View student profile
 *  JWT-protected routes
 
-### 👨‍💼 Admin Module
+###  Admin Module
 
 *  Secure admin authentication
 *  Admin dashboard with hostel statistics
@@ -208,7 +208,7 @@ MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 ```
 
-> ⚠️ Never commit `.env` files or database credentials to GitHub.
+>  Never commit `.env` files or database credentials to GitHub.
 
 ### 5. Start the backend
 
@@ -247,7 +247,7 @@ The seed process is designed to preserve existing database records rather than u
 
 ---
 
-## 📊 Main Application Modules
+##  Main Application Modules
 
 | Module             | Description                                |
 | ------------------ | ------------------------------------------ |
@@ -262,7 +262,7 @@ The seed process is designed to preserve existing database records rather than u
 
 ---
 
-## 🎯 Project Objectives
+##  Project Objectives
 
 HostelSphere was developed to provide a centralized digital platform for common hostel management activities.
 
@@ -315,7 +315,7 @@ The project focuses on:
 
 ---
 
-## 🚀 Deployment
+##  Deployment
 
 HostelSphere uses a modern cloud deployment architecture:
 
@@ -334,7 +334,7 @@ The production frontend communicates with the deployed backend API, which connec
 
 ---
 
-## 🔮 Future Improvements
+##  Future Improvements
 
 Potential future enhancements include:
 
@@ -351,11 +351,11 @@ Potential future enhancements include:
 
 ---
 
-## 👩‍💻 Author
+##  Author
 
 ### Diksha Chavan
 
-**Full-Stack Web Developer | ENTC Engineering Student**
+**ENTC Engineering Student**
 
 HostelSphere was developed as a full-stack web development project using React, Node.js, Express, and MongoDB.
 
